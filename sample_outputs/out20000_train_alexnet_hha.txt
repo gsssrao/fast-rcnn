@@ -1,0 +1,1344 @@
+added /data/gpuuser1/fast-rcnn/caffe-fast-rcnn/python
+added /data/gpuuser1/fast-rcnn/lib
+added /data/gpuuser1/fast-rcnn/python_utils
+added /data/gpuuser1/fast-rcnn/.
+Called with args:
+Namespace(caffemodel='output/default/nyud2_hha_2015_trainval/fast_rcnn_iter_20000.caffemodel', cfg_file='output/training_demo/alexnet_hha/config.prototxt.hha', comp_mode=False, gpu_id=0, imdb_name='nyud2_hha_2015_test', prototxt='output/training_demo/alexnet_hha/test.prototxt.hha', wait=True)
+Using config:
+{'DEDUP_BOXES': 0.0625,
+ 'EPS': 1e-14,
+ 'EXP_DIR': 'training_demo/alexnet_hha',
+ 'PIXEL_MEANS': array([[[ 102.9801,  115.9465,  122.7717]]]),
+ 'RNG_SEED': 3,
+ 'ROOT_DIR': '/data/gpuuser1/fast-rcnn',
+ 'TEST': {'BBOX_REG': True,
+          'DET_SALT': '',
+          'EVAL_SALT': '',
+          'MAX_PER_IMAGE': 100,
+          'MAX_PER_SET_F': 40,
+          'MAX_SIZE': 2000,
+          'NMS': 0.3,
+          'SCALES': [688],
+          'SVM': False},
+ 'TRAIN': {'BATCH_SIZE': 128,
+           'BBOX_PRED_PARAM_NAMES': ['da_bbox_pred'],
+           'BBOX_REG': True,
+           'BBOX_THRESH': 0.5,
+           'BG_THRESH_HI': 0.5,
+           'BG_THRESH_LO': 0.0,
+           'FG_FRACTION': 0.25,
+           'FG_THRESH': 0.5,
+           'IMS_PER_BATCH': 2,
+           'MAX_SIZE': 2000,
+           'SCALES': [688],
+           'SNAPSHOT_INFIX': '',
+           'SNAPSHOT_ITERS': 10000,
+           'USE_FLIPPED': True,
+           'USE_PREFETCH': False}}
+WARNING: Logging before InitGoogleLogging() is written to STDERR
+I1004 23:22:12.460575  3881 net.cpp:42] Initializing net from parameters: 
+name: "CaffeNet"
+input: "data"
+input: "rois"
+state {
+  phase: TEST
+}
+input_shape {
+  dim: 1
+  dim: 3
+  dim: 224
+  dim: 224
+}
+input_shape {
+  dim: 1
+  dim: 5
+}
+layer {
+  name: "da_conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "da_conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 96
+    pad: 7
+    kernel_size: 11
+    stride: 4
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "da_relu1"
+  type: "ReLU"
+  bottom: "da_conv1"
+  top: "da_conv1"
+}
+layer {
+  name: "da_pool1"
+  type: "Pooling"
+  bottom: "da_conv1"
+  top: "da_pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+    pad: 0
+  }
+}
+layer {
+  name: "da_norm1"
+  type: "LRN"
+  bottom: "da_pool1"
+  top: "da_norm1"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "da_conv2"
+  type: "Convolution"
+  bottom: "da_norm1"
+  top: "da_conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    pad: 2
+    kernel_size: 5
+    group: 2
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 1
+    }
+  }
+}
+layer {
+  name: "da_relu2"
+  type: "ReLU"
+  bottom: "da_conv2"
+  top: "da_conv2"
+}
+layer {
+  name: "da_pool2"
+  type: "Pooling"
+  bottom: "da_conv2"
+  top: "da_pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+    pad: 0
+  }
+}
+layer {
+  name: "da_norm2"
+  type: "LRN"
+  bottom: "da_pool2"
+  top: "da_norm2"
+  lrn_param {
+    local_size: 5
+    alpha: 0.0001
+    beta: 0.75
+  }
+}
+layer {
+  name: "da_conv3"
+  type: "Convolution"
+  bottom: "da_norm2"
+  top: "da_conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 384
+    pad: 1
+    kernel_size: 3
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "da_relu3"
+  type: "ReLU"
+  bottom: "da_conv3"
+  top: "da_conv3"
+}
+layer {
+  name: "da_conv4"
+  type: "Convolution"
+  bottom: "da_conv3"
+  top: "da_conv4"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 384
+    pad: 1
+    kernel_size: 3
+    group: 2
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 1
+    }
+  }
+}
+layer {
+  name: "da_relu4"
+  type: "ReLU"
+  bottom: "da_conv4"
+  top: "da_conv4"
+}
+layer {
+  name: "da_conv5"
+  type: "Convolution"
+  bottom: "da_conv4"
+  top: "da_conv5"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 256
+    pad: 1
+    kernel_size: 3
+    group: 2
+    stride: 1
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 1
+    }
+  }
+}
+layer {
+  name: "da_relu5"
+  type: "ReLU"
+  bottom: "da_conv5"
+  top: "da_conv5"
+}
+layer {
+  name: "da_roi_pool5"
+  type: "ROIPooling"
+  bottom: "da_conv5"
+  bottom: "rois"
+  top: "da_pool5"
+  roi_pooling_param {
+    pooled_h: 6
+    pooled_w: 6
+    spatial_scale: 0.0625
+  }
+}
+layer {
+  name: "da_fc6"
+  type: "InnerProduct"
+  bottom: "da_pool5"
+  top: "da_fc6"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "gaussian"
+      std: 0.005
+    }
+    bias_filler {
+      type: "constant"
+      value: 1
+    }
+  }
+}
+layer {
+  name: "da_relu6"
+  type: "ReLU"
+  bottom: "da_fc6"
+  top: "da_fc6"
+}
+layer {
+  name: "da_drop6"
+  type: "Dropout"
+  bottom: "da_fc6"
+  top: "da_fc6"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "da_fc7"
+  type: "InnerProduct"
+  bottom: "da_fc6"
+  top: "da_fc7"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "gaussian"
+      std: 0.005
+    }
+    bias_filler {
+      type: "constant"
+      value: 1
+    }
+  }
+}
+layer {
+  name: "da_relu7"
+  type: "ReLU"
+  bottom: "da_fc7"
+  top: "da_fc7"
+}
+layer {
+  name: "da_drop7"
+  type: "Dropout"
+  bottom: "da_fc7"
+  top: "da_fc7"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "da_cls_score"
+  type: "InnerProduct"
+  bottom: "da_fc7"
+  top: "cls_score_1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 20
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "da_bbox_pred"
+  type: "InnerProduct"
+  bottom: "da_fc7"
+  top: "bbox_pred_1"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 80
+    weight_filler {
+      type: "gaussian"
+      std: 0.001
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "sum"
+  type: "Eltwise"
+  bottom: "bbox_pred_1"
+  bottom: "bbox_pred_1"
+  top: "bbox_pred"
+  eltwise_param {
+    operation: SUM
+    coeff: 0.5
+    coeff: 0.5
+  }
+}
+layer {
+  name: "sum"
+  type: "Eltwise"
+  bottom: "cls_score_1"
+  bottom: "cls_score_1"
+  top: "cls_score"
+  eltwise_param {
+    operation: SUM
+    coeff: 0.5
+    coeff: 0.5
+  }
+}
+layer {
+  name: "cls_prob"
+  type: "Softmax"
+  bottom: "cls_score"
+  top: "cls_prob"
+}
+I1004 23:22:12.460741  3881 net.cpp:340] Input 0 -> data
+I1004 23:22:12.460770  3881 net.cpp:340] Input 1 -> rois
+I1004 23:22:12.460790  3881 layer_factory.hpp:74] Creating layer da_conv1
+I1004 23:22:12.460806  3881 net.cpp:84] Creating Layer da_conv1
+I1004 23:22:12.460814  3881 net.cpp:380] da_conv1 <- data
+I1004 23:22:12.460826  3881 net.cpp:338] da_conv1 -> da_conv1
+I1004 23:22:12.460839  3881 net.cpp:113] Setting up da_conv1
+I1004 23:22:12.525744  3881 net.cpp:120] Top shape: 1 96 57 57 (311904)
+I1004 23:22:12.525786  3881 layer_factory.hpp:74] Creating layer da_relu1
+I1004 23:22:12.525804  3881 net.cpp:84] Creating Layer da_relu1
+I1004 23:22:12.525811  3881 net.cpp:380] da_relu1 <- da_conv1
+I1004 23:22:12.525821  3881 net.cpp:327] da_relu1 -> da_conv1 (in-place)
+I1004 23:22:12.525832  3881 net.cpp:113] Setting up da_relu1
+I1004 23:22:12.525894  3881 net.cpp:120] Top shape: 1 96 57 57 (311904)
+I1004 23:22:12.525908  3881 layer_factory.hpp:74] Creating layer da_pool1
+I1004 23:22:12.525921  3881 net.cpp:84] Creating Layer da_pool1
+I1004 23:22:12.525928  3881 net.cpp:380] da_pool1 <- da_conv1
+I1004 23:22:12.525938  3881 net.cpp:338] da_pool1 -> da_pool1
+I1004 23:22:12.525948  3881 net.cpp:113] Setting up da_pool1
+I1004 23:22:12.526011  3881 net.cpp:120] Top shape: 1 96 28 28 (75264)
+I1004 23:22:12.526024  3881 layer_factory.hpp:74] Creating layer da_norm1
+I1004 23:22:12.526036  3881 net.cpp:84] Creating Layer da_norm1
+I1004 23:22:12.526043  3881 net.cpp:380] da_norm1 <- da_pool1
+I1004 23:22:12.526052  3881 net.cpp:338] da_norm1 -> da_norm1
+I1004 23:22:12.526063  3881 net.cpp:113] Setting up da_norm1
+I1004 23:22:12.526077  3881 net.cpp:120] Top shape: 1 96 28 28 (75264)
+I1004 23:22:12.526084  3881 layer_factory.hpp:74] Creating layer da_conv2
+I1004 23:22:12.526098  3881 net.cpp:84] Creating Layer da_conv2
+I1004 23:22:12.526104  3881 net.cpp:380] da_conv2 <- da_norm1
+I1004 23:22:12.526113  3881 net.cpp:338] da_conv2 -> da_conv2
+I1004 23:22:12.526124  3881 net.cpp:113] Setting up da_conv2
+I1004 23:22:12.537463  3881 net.cpp:120] Top shape: 1 256 28 28 (200704)
+I1004 23:22:12.537485  3881 layer_factory.hpp:74] Creating layer da_relu2
+I1004 23:22:12.537497  3881 net.cpp:84] Creating Layer da_relu2
+I1004 23:22:12.537503  3881 net.cpp:380] da_relu2 <- da_conv2
+I1004 23:22:12.537513  3881 net.cpp:327] da_relu2 -> da_conv2 (in-place)
+I1004 23:22:12.537521  3881 net.cpp:113] Setting up da_relu2
+I1004 23:22:12.537576  3881 net.cpp:120] Top shape: 1 256 28 28 (200704)
+I1004 23:22:12.537586  3881 layer_factory.hpp:74] Creating layer da_pool2
+I1004 23:22:12.537596  3881 net.cpp:84] Creating Layer da_pool2
+I1004 23:22:12.537603  3881 net.cpp:380] da_pool2 <- da_conv2
+I1004 23:22:12.537612  3881 net.cpp:338] da_pool2 -> da_pool2
+I1004 23:22:12.537621  3881 net.cpp:113] Setting up da_pool2
+I1004 23:22:12.537817  3881 net.cpp:120] Top shape: 1 256 14 14 (50176)
+I1004 23:22:12.537832  3881 layer_factory.hpp:74] Creating layer da_norm2
+I1004 23:22:12.537842  3881 net.cpp:84] Creating Layer da_norm2
+I1004 23:22:12.537850  3881 net.cpp:380] da_norm2 <- da_pool2
+I1004 23:22:12.537859  3881 net.cpp:338] da_norm2 -> da_norm2
+I1004 23:22:12.537869  3881 net.cpp:113] Setting up da_norm2
+I1004 23:22:12.537879  3881 net.cpp:120] Top shape: 1 256 14 14 (50176)
+I1004 23:22:12.537886  3881 layer_factory.hpp:74] Creating layer da_conv3
+I1004 23:22:12.537897  3881 net.cpp:84] Creating Layer da_conv3
+I1004 23:22:12.537904  3881 net.cpp:380] da_conv3 <- da_norm2
+I1004 23:22:12.537914  3881 net.cpp:338] da_conv3 -> da_conv3
+I1004 23:22:12.537925  3881 net.cpp:113] Setting up da_conv3
+I1004 23:22:12.569178  3881 net.cpp:120] Top shape: 1 384 14 14 (75264)
+I1004 23:22:12.569205  3881 layer_factory.hpp:74] Creating layer da_relu3
+I1004 23:22:12.569216  3881 net.cpp:84] Creating Layer da_relu3
+I1004 23:22:12.569224  3881 net.cpp:380] da_relu3 <- da_conv3
+I1004 23:22:12.569233  3881 net.cpp:327] da_relu3 -> da_conv3 (in-place)
+I1004 23:22:12.569243  3881 net.cpp:113] Setting up da_relu3
+I1004 23:22:12.569299  3881 net.cpp:120] Top shape: 1 384 14 14 (75264)
+I1004 23:22:12.569309  3881 layer_factory.hpp:74] Creating layer da_conv4
+I1004 23:22:12.569320  3881 net.cpp:84] Creating Layer da_conv4
+I1004 23:22:12.569327  3881 net.cpp:380] da_conv4 <- da_conv3
+I1004 23:22:12.569337  3881 net.cpp:338] da_conv4 -> da_conv4
+I1004 23:22:12.569349  3881 net.cpp:113] Setting up da_conv4
+I1004 23:22:12.593691  3881 net.cpp:120] Top shape: 1 384 14 14 (75264)
+I1004 23:22:12.593714  3881 layer_factory.hpp:74] Creating layer da_relu4
+I1004 23:22:12.593725  3881 net.cpp:84] Creating Layer da_relu4
+I1004 23:22:12.593732  3881 net.cpp:380] da_relu4 <- da_conv4
+I1004 23:22:12.593741  3881 net.cpp:327] da_relu4 -> da_conv4 (in-place)
+I1004 23:22:12.593751  3881 net.cpp:113] Setting up da_relu4
+I1004 23:22:12.593807  3881 net.cpp:120] Top shape: 1 384 14 14 (75264)
+I1004 23:22:12.593817  3881 layer_factory.hpp:74] Creating layer da_conv5
+I1004 23:22:12.593828  3881 net.cpp:84] Creating Layer da_conv5
+I1004 23:22:12.593835  3881 net.cpp:380] da_conv5 <- da_conv4
+I1004 23:22:12.593845  3881 net.cpp:338] da_conv5 -> da_conv5
+I1004 23:22:12.593857  3881 net.cpp:113] Setting up da_conv5
+I1004 23:22:12.610327  3881 net.cpp:120] Top shape: 1 256 14 14 (50176)
+I1004 23:22:12.610352  3881 layer_factory.hpp:74] Creating layer da_relu5
+I1004 23:22:12.610363  3881 net.cpp:84] Creating Layer da_relu5
+I1004 23:22:12.610369  3881 net.cpp:380] da_relu5 <- da_conv5
+I1004 23:22:12.610378  3881 net.cpp:327] da_relu5 -> da_conv5 (in-place)
+I1004 23:22:12.610388  3881 net.cpp:113] Setting up da_relu5
+I1004 23:22:12.610589  3881 net.cpp:120] Top shape: 1 256 14 14 (50176)
+I1004 23:22:12.610605  3881 layer_factory.hpp:74] Creating layer da_roi_pool5
+I1004 23:22:12.610620  3881 net.cpp:84] Creating Layer da_roi_pool5
+I1004 23:22:12.610627  3881 net.cpp:380] da_roi_pool5 <- da_conv5
+I1004 23:22:12.610635  3881 net.cpp:380] da_roi_pool5 <- rois
+I1004 23:22:12.610646  3881 net.cpp:338] da_roi_pool5 -> da_pool5
+I1004 23:22:12.610657  3881 net.cpp:113] Setting up da_roi_pool5
+I1004 23:22:12.610666  3881 roi_pooling_layer.cpp:30] Spatial scale: 0.0625
+I1004 23:22:12.610690  3881 net.cpp:120] Top shape: 1 256 6 6 (9216)
+I1004 23:22:12.610697  3881 layer_factory.hpp:74] Creating layer da_fc6
+I1004 23:22:12.610708  3881 net.cpp:84] Creating Layer da_fc6
+I1004 23:22:12.610715  3881 net.cpp:380] da_fc6 <- da_pool5
+I1004 23:22:12.610725  3881 net.cpp:338] da_fc6 -> da_fc6
+I1004 23:22:12.610736  3881 net.cpp:113] Setting up da_fc6
+I1004 23:22:13.934093  3881 net.cpp:120] Top shape: 1 4096 (4096)
+I1004 23:22:13.934131  3881 layer_factory.hpp:74] Creating layer da_relu6
+I1004 23:22:13.934149  3881 net.cpp:84] Creating Layer da_relu6
+I1004 23:22:13.934157  3881 net.cpp:380] da_relu6 <- da_fc6
+I1004 23:22:13.934167  3881 net.cpp:327] da_relu6 -> da_fc6 (in-place)
+I1004 23:22:13.934180  3881 net.cpp:113] Setting up da_relu6
+I1004 23:22:13.934268  3881 net.cpp:120] Top shape: 1 4096 (4096)
+I1004 23:22:13.934280  3881 layer_factory.hpp:74] Creating layer da_drop6
+I1004 23:22:13.934299  3881 net.cpp:84] Creating Layer da_drop6
+I1004 23:22:13.934308  3881 net.cpp:380] da_drop6 <- da_fc6
+I1004 23:22:13.934315  3881 net.cpp:327] da_drop6 -> da_fc6 (in-place)
+I1004 23:22:13.934325  3881 net.cpp:113] Setting up da_drop6
+I1004 23:22:13.934335  3881 net.cpp:120] Top shape: 1 4096 (4096)
+I1004 23:22:13.934342  3881 layer_factory.hpp:74] Creating layer da_fc7
+I1004 23:22:13.934353  3881 net.cpp:84] Creating Layer da_fc7
+I1004 23:22:13.934360  3881 net.cpp:380] da_fc7 <- da_fc6
+I1004 23:22:13.934370  3881 net.cpp:338] da_fc7 -> da_fc7
+I1004 23:22:13.934381  3881 net.cpp:113] Setting up da_fc7
+I1004 23:22:14.519783  3881 net.cpp:120] Top shape: 1 4096 (4096)
+I1004 23:22:14.519819  3881 layer_factory.hpp:74] Creating layer da_relu7
+I1004 23:22:14.519836  3881 net.cpp:84] Creating Layer da_relu7
+I1004 23:22:14.519845  3881 net.cpp:380] da_relu7 <- da_fc7
+I1004 23:22:14.519855  3881 net.cpp:327] da_relu7 -> da_fc7 (in-place)
+I1004 23:22:14.519865  3881 net.cpp:113] Setting up da_relu7
+I1004 23:22:14.519955  3881 net.cpp:120] Top shape: 1 4096 (4096)
+I1004 23:22:14.519966  3881 layer_factory.hpp:74] Creating layer da_drop7
+I1004 23:22:14.519979  3881 net.cpp:84] Creating Layer da_drop7
+I1004 23:22:14.519984  3881 net.cpp:380] da_drop7 <- da_fc7
+I1004 23:22:14.519994  3881 net.cpp:327] da_drop7 -> da_fc7 (in-place)
+I1004 23:22:14.520002  3881 net.cpp:113] Setting up da_drop7
+I1004 23:22:14.520014  3881 net.cpp:120] Top shape: 1 4096 (4096)
+I1004 23:22:14.520020  3881 layer_factory.hpp:74] Creating layer da_fc7_da_drop7_0_split
+I1004 23:22:14.520037  3881 net.cpp:84] Creating Layer da_fc7_da_drop7_0_split
+I1004 23:22:14.520045  3881 net.cpp:380] da_fc7_da_drop7_0_split <- da_fc7
+I1004 23:22:14.520053  3881 net.cpp:338] da_fc7_da_drop7_0_split -> da_fc7_da_drop7_0_split_0
+I1004 23:22:14.520064  3881 net.cpp:338] da_fc7_da_drop7_0_split -> da_fc7_da_drop7_0_split_1
+I1004 23:22:14.520078  3881 net.cpp:113] Setting up da_fc7_da_drop7_0_split
+I1004 23:22:14.520088  3881 net.cpp:120] Top shape: 1 4096 (4096)
+I1004 23:22:14.520097  3881 net.cpp:120] Top shape: 1 4096 (4096)
+I1004 23:22:14.520103  3881 layer_factory.hpp:74] Creating layer da_cls_score
+I1004 23:22:14.520114  3881 net.cpp:84] Creating Layer da_cls_score
+I1004 23:22:14.520122  3881 net.cpp:380] da_cls_score <- da_fc7_da_drop7_0_split_0
+I1004 23:22:14.520130  3881 net.cpp:338] da_cls_score -> cls_score_1
+I1004 23:22:14.520145  3881 net.cpp:113] Setting up da_cls_score
+I1004 23:22:14.523059  3881 net.cpp:120] Top shape: 1 20 (20)
+I1004 23:22:14.523077  3881 layer_factory.hpp:74] Creating layer cls_score_1_da_cls_score_0_split
+I1004 23:22:14.523087  3881 net.cpp:84] Creating Layer cls_score_1_da_cls_score_0_split
+I1004 23:22:14.523097  3881 net.cpp:380] cls_score_1_da_cls_score_0_split <- cls_score_1
+I1004 23:22:14.523107  3881 net.cpp:338] cls_score_1_da_cls_score_0_split -> cls_score_1_da_cls_score_0_split_0
+I1004 23:22:14.523118  3881 net.cpp:338] cls_score_1_da_cls_score_0_split -> cls_score_1_da_cls_score_0_split_1
+I1004 23:22:14.523126  3881 net.cpp:113] Setting up cls_score_1_da_cls_score_0_split
+I1004 23:22:14.523136  3881 net.cpp:120] Top shape: 1 20 (20)
+I1004 23:22:14.523144  3881 net.cpp:120] Top shape: 1 20 (20)
+I1004 23:22:14.523150  3881 layer_factory.hpp:74] Creating layer da_bbox_pred
+I1004 23:22:14.523159  3881 net.cpp:84] Creating Layer da_bbox_pred
+I1004 23:22:14.523166  3881 net.cpp:380] da_bbox_pred <- da_fc7_da_drop7_0_split_1
+I1004 23:22:14.523176  3881 net.cpp:338] da_bbox_pred -> bbox_pred_1
+I1004 23:22:14.523186  3881 net.cpp:113] Setting up da_bbox_pred
+I1004 23:22:14.534494  3881 net.cpp:120] Top shape: 1 80 (80)
+I1004 23:22:14.534517  3881 layer_factory.hpp:74] Creating layer bbox_pred_1_da_bbox_pred_0_split
+I1004 23:22:14.534529  3881 net.cpp:84] Creating Layer bbox_pred_1_da_bbox_pred_0_split
+I1004 23:22:14.534536  3881 net.cpp:380] bbox_pred_1_da_bbox_pred_0_split <- bbox_pred_1
+I1004 23:22:14.534546  3881 net.cpp:338] bbox_pred_1_da_bbox_pred_0_split -> bbox_pred_1_da_bbox_pred_0_split_0
+I1004 23:22:14.534556  3881 net.cpp:338] bbox_pred_1_da_bbox_pred_0_split -> bbox_pred_1_da_bbox_pred_0_split_1
+I1004 23:22:14.534566  3881 net.cpp:113] Setting up bbox_pred_1_da_bbox_pred_0_split
+I1004 23:22:14.534575  3881 net.cpp:120] Top shape: 1 80 (80)
+I1004 23:22:14.534584  3881 net.cpp:120] Top shape: 1 80 (80)
+I1004 23:22:14.534590  3881 layer_factory.hpp:74] Creating layer sum
+I1004 23:22:14.534603  3881 net.cpp:84] Creating Layer sum
+I1004 23:22:14.534610  3881 net.cpp:380] sum <- bbox_pred_1_da_bbox_pred_0_split_0
+I1004 23:22:14.534618  3881 net.cpp:380] sum <- bbox_pred_1_da_bbox_pred_0_split_1
+I1004 23:22:14.534627  3881 net.cpp:338] sum -> bbox_pred
+I1004 23:22:14.534637  3881 net.cpp:113] Setting up sum
+I1004 23:22:14.534651  3881 net.cpp:120] Top shape: 1 80 (80)
+I1004 23:22:14.534658  3881 layer_factory.hpp:74] Creating layer sum
+I1004 23:22:14.534667  3881 net.cpp:84] Creating Layer sum
+I1004 23:22:14.534674  3881 net.cpp:380] sum <- cls_score_1_da_cls_score_0_split_0
+I1004 23:22:14.534682  3881 net.cpp:380] sum <- cls_score_1_da_cls_score_0_split_1
+I1004 23:22:14.534690  3881 net.cpp:338] sum -> cls_score
+I1004 23:22:14.534699  3881 net.cpp:113] Setting up sum
+I1004 23:22:14.534709  3881 net.cpp:120] Top shape: 1 20 (20)
+I1004 23:22:14.534716  3881 layer_factory.hpp:74] Creating layer cls_prob
+I1004 23:22:14.534724  3881 net.cpp:84] Creating Layer cls_prob
+I1004 23:22:14.534731  3881 net.cpp:380] cls_prob <- cls_score
+I1004 23:22:14.534739  3881 net.cpp:338] cls_prob -> cls_prob
+I1004 23:22:14.534749  3881 net.cpp:113] Setting up cls_prob
+I1004 23:22:14.534818  3881 net.cpp:120] Top shape: 1 20 (20)
+I1004 23:22:14.534831  3881 net.cpp:169] cls_prob does not need backward computation.
+I1004 23:22:14.534837  3881 net.cpp:169] sum does not need backward computation.
+I1004 23:22:14.534843  3881 net.cpp:169] sum does not need backward computation.
+I1004 23:22:14.534849  3881 net.cpp:169] bbox_pred_1_da_bbox_pred_0_split does not need backward computation.
+I1004 23:22:14.534855  3881 net.cpp:169] da_bbox_pred does not need backward computation.
+I1004 23:22:14.534862  3881 net.cpp:169] cls_score_1_da_cls_score_0_split does not need backward computation.
+I1004 23:22:14.534867  3881 net.cpp:169] da_cls_score does not need backward computation.
+I1004 23:22:14.534873  3881 net.cpp:169] da_fc7_da_drop7_0_split does not need backward computation.
+I1004 23:22:14.534878  3881 net.cpp:169] da_drop7 does not need backward computation.
+I1004 23:22:14.534884  3881 net.cpp:169] da_relu7 does not need backward computation.
+I1004 23:22:14.534890  3881 net.cpp:169] da_fc7 does not need backward computation.
+I1004 23:22:14.534896  3881 net.cpp:169] da_drop6 does not need backward computation.
+I1004 23:22:14.534903  3881 net.cpp:169] da_relu6 does not need backward computation.
+I1004 23:22:14.534909  3881 net.cpp:169] da_fc6 does not need backward computation.
+I1004 23:22:14.534914  3881 net.cpp:169] da_roi_pool5 does not need backward computation.
+I1004 23:22:14.534919  3881 net.cpp:169] da_relu5 does not need backward computation.
+I1004 23:22:14.534925  3881 net.cpp:169] da_conv5 does not need backward computation.
+I1004 23:22:14.534931  3881 net.cpp:169] da_relu4 does not need backward computation.
+I1004 23:22:14.534937  3881 net.cpp:169] da_conv4 does not need backward computation.
+I1004 23:22:14.534943  3881 net.cpp:169] da_relu3 does not need backward computation.
+I1004 23:22:14.534950  3881 net.cpp:169] da_conv3 does not need backward computation.
+I1004 23:22:14.534955  3881 net.cpp:169] da_norm2 does not need backward computation.
+I1004 23:22:14.534961  3881 net.cpp:169] da_pool2 does not need backward computation.
+I1004 23:22:14.534967  3881 net.cpp:169] da_relu2 does not need backward computation.
+I1004 23:22:14.534972  3881 net.cpp:169] da_conv2 does not need backward computation.
+I1004 23:22:14.534978  3881 net.cpp:169] da_norm1 does not need backward computation.
+I1004 23:22:14.534984  3881 net.cpp:169] da_pool1 does not need backward computation.
+I1004 23:22:14.534991  3881 net.cpp:169] da_relu1 does not need backward computation.
+I1004 23:22:14.534996  3881 net.cpp:169] da_conv1 does not need backward computation.
+I1004 23:22:14.535002  3881 net.cpp:205] This network produces output bbox_pred
+I1004 23:22:14.535008  3881 net.cpp:205] This network produces output cls_prob
+I1004 23:22:14.535030  3881 net.cpp:447] Collecting Learning Rate and Weight Decay.
+I1004 23:22:14.535042  3881 net.cpp:217] Network initialization done.
+I1004 23:22:14.535048  3881 net.cpp:218] Memory required for data: 6879632
+nyud2_hha_2015_test ss roidb loaded from /data/gpuuser1/fast-rcnn/data/cache/nyud2_hha_2015_test_mcg_roidb.pkl
+im_detect: 1/654 0.330s 0.007s
+im_detect: 2/654 0.287s 0.007s
+im_detect: 3/654 0.279s 0.007s
+im_detect: 4/654 0.278s 0.006s
+im_detect: 5/654 0.271s 0.006s
+im_detect: 6/654 0.269s 0.006s
+im_detect: 7/654 0.267s 0.006s
+im_detect: 8/654 0.264s 0.006s
+im_detect: 9/654 0.264s 0.006s
+im_detect: 10/654 0.263s 0.006s
+im_detect: 11/654 0.263s 0.006s
+im_detect: 12/654 0.262s 0.006s
+im_detect: 13/654 0.262s 0.006s
+im_detect: 14/654 0.262s 0.006s
+im_detect: 15/654 0.259s 0.006s
+im_detect: 16/654 0.259s 0.006s
+im_detect: 17/654 0.259s 0.006s
+im_detect: 18/654 0.259s 0.006s
+im_detect: 19/654 0.258s 0.006s
+im_detect: 20/654 0.258s 0.006s
+im_detect: 21/654 0.259s 0.006s
+im_detect: 22/654 0.259s 0.006s
+im_detect: 23/654 0.258s 0.006s
+im_detect: 24/654 0.257s 0.006s
+im_detect: 25/654 0.257s 0.006s
+im_detect: 26/654 0.256s 0.006s
+im_detect: 27/654 0.255s 0.006s
+im_detect: 28/654 0.255s 0.006s
+im_detect: 29/654 0.254s 0.006s
+im_detect: 30/654 0.254s 0.006s
+im_detect: 31/654 0.254s 0.006s
+im_detect: 32/654 0.255s 0.006s
+im_detect: 33/654 0.254s 0.006s
+im_detect: 34/654 0.254s 0.006s
+im_detect: 35/654 0.254s 0.006s
+im_detect: 36/654 0.254s 0.006s
+im_detect: 37/654 0.254s 0.006s
+im_detect: 38/654 0.253s 0.006s
+im_detect: 39/654 0.253s 0.006s
+im_detect: 40/654 0.254s 0.006s
+im_detect: 41/654 0.254s 0.006s
+im_detect: 42/654 0.254s 0.006s
+im_detect: 43/654 0.254s 0.006s
+im_detect: 44/654 0.254s 0.006s
+im_detect: 45/654 0.254s 0.006s
+im_detect: 46/654 0.254s 0.006s
+im_detect: 47/654 0.254s 0.006s
+im_detect: 48/654 0.255s 0.006s
+im_detect: 49/654 0.255s 0.006s
+im_detect: 50/654 0.255s 0.006s
+im_detect: 51/654 0.255s 0.006s
+im_detect: 52/654 0.255s 0.006s
+im_detect: 53/654 0.255s 0.006s
+im_detect: 54/654 0.255s 0.006s
+im_detect: 55/654 0.254s 0.006s
+im_detect: 56/654 0.254s 0.006s
+im_detect: 57/654 0.254s 0.006s
+im_detect: 58/654 0.254s 0.006s
+im_detect: 59/654 0.254s 0.006s
+im_detect: 60/654 0.254s 0.006s
+im_detect: 61/654 0.254s 0.006s
+im_detect: 62/654 0.254s 0.006s
+im_detect: 63/654 0.253s 0.006s
+im_detect: 64/654 0.253s 0.006s
+im_detect: 65/654 0.253s 0.006s
+im_detect: 66/654 0.253s 0.006s
+im_detect: 67/654 0.253s 0.006s
+im_detect: 68/654 0.253s 0.006s
+im_detect: 69/654 0.253s 0.006s
+im_detect: 70/654 0.254s 0.006s
+im_detect: 71/654 0.253s 0.006s
+im_detect: 72/654 0.253s 0.006s
+im_detect: 73/654 0.254s 0.006s
+im_detect: 74/654 0.254s 0.006s
+im_detect: 75/654 0.253s 0.006s
+im_detect: 76/654 0.253s 0.006s
+im_detect: 77/654 0.253s 0.006s
+im_detect: 78/654 0.253s 0.006s
+im_detect: 79/654 0.253s 0.006s
+im_detect: 80/654 0.253s 0.006s
+im_detect: 81/654 0.253s 0.006s
+im_detect: 82/654 0.253s 0.006s
+im_detect: 83/654 0.253s 0.006s
+im_detect: 84/654 0.252s 0.006s
+im_detect: 85/654 0.252s 0.006s
+im_detect: 86/654 0.252s 0.006s
+im_detect: 87/654 0.252s 0.006s
+im_detect: 88/654 0.252s 0.006s
+im_detect: 89/654 0.252s 0.006s
+im_detect: 90/654 0.252s 0.006s
+im_detect: 91/654 0.252s 0.006s
+im_detect: 92/654 0.252s 0.006s
+im_detect: 93/654 0.252s 0.006s
+im_detect: 94/654 0.252s 0.006s
+im_detect: 95/654 0.252s 0.006s
+im_detect: 96/654 0.252s 0.006s
+im_detect: 97/654 0.252s 0.006s
+im_detect: 98/654 0.252s 0.006s
+im_detect: 99/654 0.252s 0.006s
+im_detect: 100/654 0.252s 0.006s
+im_detect: 101/654 0.252s 0.006s
+im_detect: 102/654 0.252s 0.006s
+im_detect: 103/654 0.252s 0.006s
+im_detect: 104/654 0.252s 0.006s
+im_detect: 105/654 0.252s 0.006s
+im_detect: 106/654 0.252s 0.006s
+im_detect: 107/654 0.252s 0.006s
+im_detect: 108/654 0.252s 0.006s
+im_detect: 109/654 0.252s 0.006s
+im_detect: 110/654 0.253s 0.006s
+im_detect: 111/654 0.253s 0.006s
+im_detect: 112/654 0.253s 0.006s
+im_detect: 113/654 0.252s 0.006s
+im_detect: 114/654 0.253s 0.006s
+im_detect: 115/654 0.253s 0.006s
+im_detect: 116/654 0.253s 0.006s
+im_detect: 117/654 0.253s 0.006s
+im_detect: 118/654 0.253s 0.006s
+im_detect: 119/654 0.253s 0.006s
+im_detect: 120/654 0.253s 0.006s
+im_detect: 121/654 0.253s 0.006s
+im_detect: 122/654 0.253s 0.006s
+im_detect: 123/654 0.253s 0.006s
+im_detect: 124/654 0.253s 0.006s
+im_detect: 125/654 0.253s 0.006s
+im_detect: 126/654 0.253s 0.006s
+im_detect: 127/654 0.253s 0.006s
+im_detect: 128/654 0.253s 0.006s
+im_detect: 129/654 0.253s 0.006s
+im_detect: 130/654 0.253s 0.006s
+im_detect: 131/654 0.253s 0.006s
+im_detect: 132/654 0.253s 0.006s
+im_detect: 133/654 0.253s 0.006s
+im_detect: 134/654 0.253s 0.006s
+im_detect: 135/654 0.253s 0.006s
+im_detect: 136/654 0.253s 0.006s
+im_detect: 137/654 0.253s 0.006s
+im_detect: 138/654 0.253s 0.006s
+im_detect: 139/654 0.253s 0.006s
+im_detect: 140/654 0.254s 0.006s
+im_detect: 141/654 0.254s 0.006s
+im_detect: 142/654 0.254s 0.006s
+im_detect: 143/654 0.254s 0.006s
+im_detect: 144/654 0.254s 0.006s
+im_detect: 145/654 0.254s 0.006s
+im_detect: 146/654 0.254s 0.006s
+im_detect: 147/654 0.254s 0.006s
+im_detect: 148/654 0.254s 0.006s
+im_detect: 149/654 0.254s 0.006s
+im_detect: 150/654 0.254s 0.006s
+im_detect: 151/654 0.254s 0.006s
+im_detect: 152/654 0.254s 0.006s
+im_detect: 153/654 0.254s 0.006s
+im_detect: 154/654 0.254s 0.006s
+im_detect: 155/654 0.254s 0.006s
+im_detect: 156/654 0.254s 0.006s
+im_detect: 157/654 0.254s 0.006s
+im_detect: 158/654 0.254s 0.006s
+im_detect: 159/654 0.254s 0.006s
+im_detect: 160/654 0.254s 0.006s
+im_detect: 161/654 0.254s 0.006s
+im_detect: 162/654 0.254s 0.006s
+im_detect: 163/654 0.254s 0.006s
+im_detect: 164/654 0.254s 0.006s
+im_detect: 165/654 0.254s 0.006s
+im_detect: 166/654 0.254s 0.006s
+im_detect: 167/654 0.254s 0.006s
+im_detect: 168/654 0.254s 0.006s
+im_detect: 169/654 0.254s 0.006s
+im_detect: 170/654 0.255s 0.006s
+im_detect: 171/654 0.255s 0.006s
+im_detect: 172/654 0.255s 0.006s
+im_detect: 173/654 0.255s 0.006s
+im_detect: 174/654 0.255s 0.006s
+im_detect: 175/654 0.255s 0.006s
+im_detect: 176/654 0.255s 0.006s
+im_detect: 177/654 0.255s 0.006s
+im_detect: 178/654 0.255s 0.006s
+im_detect: 179/654 0.255s 0.006s
+im_detect: 180/654 0.255s 0.006s
+im_detect: 181/654 0.255s 0.006s
+im_detect: 182/654 0.255s 0.006s
+im_detect: 183/654 0.255s 0.006s
+im_detect: 184/654 0.255s 0.006s
+im_detect: 185/654 0.255s 0.006s
+im_detect: 186/654 0.255s 0.006s
+im_detect: 187/654 0.255s 0.006s
+im_detect: 188/654 0.255s 0.006s
+im_detect: 189/654 0.255s 0.006s
+im_detect: 190/654 0.255s 0.006s
+im_detect: 191/654 0.255s 0.006s
+im_detect: 192/654 0.255s 0.006s
+im_detect: 193/654 0.255s 0.006s
+im_detect: 194/654 0.256s 0.006s
+im_detect: 195/654 0.256s 0.006s
+im_detect: 196/654 0.256s 0.006s
+im_detect: 197/654 0.256s 0.006s
+im_detect: 198/654 0.256s 0.006s
+im_detect: 199/654 0.255s 0.006s
+im_detect: 200/654 0.255s 0.006s
+im_detect: 201/654 0.256s 0.006s
+im_detect: 202/654 0.256s 0.006s
+im_detect: 203/654 0.256s 0.006s
+im_detect: 204/654 0.256s 0.006s
+im_detect: 205/654 0.256s 0.006s
+im_detect: 206/654 0.256s 0.006s
+im_detect: 207/654 0.256s 0.006s
+im_detect: 208/654 0.256s 0.006s
+im_detect: 209/654 0.256s 0.006s
+im_detect: 210/654 0.256s 0.006s
+im_detect: 211/654 0.256s 0.006s
+im_detect: 212/654 0.256s 0.006s
+im_detect: 213/654 0.256s 0.006s
+im_detect: 214/654 0.256s 0.006s
+im_detect: 215/654 0.256s 0.006s
+im_detect: 216/654 0.256s 0.006s
+im_detect: 217/654 0.256s 0.006s
+im_detect: 218/654 0.256s 0.006s
+im_detect: 219/654 0.256s 0.006s
+im_detect: 220/654 0.256s 0.006s
+im_detect: 221/654 0.256s 0.006s
+im_detect: 222/654 0.256s 0.006s
+im_detect: 223/654 0.256s 0.006s
+im_detect: 224/654 0.256s 0.006s
+im_detect: 225/654 0.256s 0.006s
+im_detect: 226/654 0.256s 0.006s
+im_detect: 227/654 0.256s 0.006s
+im_detect: 228/654 0.257s 0.006s
+im_detect: 229/654 0.257s 0.006s
+im_detect: 230/654 0.257s 0.006s
+im_detect: 231/654 0.257s 0.006s
+im_detect: 232/654 0.257s 0.006s
+im_detect: 233/654 0.257s 0.006s
+im_detect: 234/654 0.257s 0.006s
+im_detect: 235/654 0.257s 0.006s
+im_detect: 236/654 0.257s 0.006s
+im_detect: 237/654 0.257s 0.006s
+im_detect: 238/654 0.257s 0.006s
+im_detect: 239/654 0.257s 0.006s
+im_detect: 240/654 0.257s 0.006s
+im_detect: 241/654 0.257s 0.006s
+im_detect: 242/654 0.257s 0.006s
+im_detect: 243/654 0.257s 0.006s
+im_detect: 244/654 0.257s 0.006s
+im_detect: 245/654 0.257s 0.006s
+im_detect: 246/654 0.257s 0.006s
+im_detect: 247/654 0.257s 0.006s
+im_detect: 248/654 0.257s 0.006s
+im_detect: 249/654 0.257s 0.006s
+im_detect: 250/654 0.258s 0.006s
+im_detect: 251/654 0.258s 0.006s
+im_detect: 252/654 0.258s 0.006s
+im_detect: 253/654 0.258s 0.006s
+im_detect: 254/654 0.258s 0.006s
+im_detect: 255/654 0.258s 0.006s
+im_detect: 256/654 0.258s 0.006s
+im_detect: 257/654 0.258s 0.006s
+im_detect: 258/654 0.258s 0.006s
+im_detect: 259/654 0.258s 0.006s
+im_detect: 260/654 0.258s 0.006s
+im_detect: 261/654 0.258s 0.006s
+im_detect: 262/654 0.258s 0.006s
+im_detect: 263/654 0.258s 0.006s
+im_detect: 264/654 0.258s 0.006s
+im_detect: 265/654 0.259s 0.006s
+im_detect: 266/654 0.259s 0.006s
+im_detect: 267/654 0.259s 0.006s
+im_detect: 268/654 0.259s 0.006s
+im_detect: 269/654 0.259s 0.006s
+im_detect: 270/654 0.259s 0.006s
+im_detect: 271/654 0.259s 0.006s
+im_detect: 272/654 0.259s 0.006s
+im_detect: 273/654 0.259s 0.006s
+im_detect: 274/654 0.259s 0.006s
+im_detect: 275/654 0.259s 0.006s
+im_detect: 276/654 0.259s 0.006s
+im_detect: 277/654 0.259s 0.006s
+im_detect: 278/654 0.259s 0.006s
+im_detect: 279/654 0.259s 0.006s
+im_detect: 280/654 0.259s 0.006s
+im_detect: 281/654 0.259s 0.006s
+im_detect: 282/654 0.259s 0.006s
+im_detect: 283/654 0.259s 0.006s
+im_detect: 284/654 0.259s 0.006s
+im_detect: 285/654 0.259s 0.006s
+im_detect: 286/654 0.259s 0.006s
+im_detect: 287/654 0.259s 0.006s
+im_detect: 288/654 0.259s 0.006s
+im_detect: 289/654 0.259s 0.006s
+im_detect: 290/654 0.259s 0.006s
+im_detect: 291/654 0.259s 0.007s
+im_detect: 292/654 0.259s 0.007s
+im_detect: 293/654 0.259s 0.007s
+im_detect: 294/654 0.259s 0.007s
+im_detect: 295/654 0.259s 0.007s
+im_detect: 296/654 0.259s 0.007s
+im_detect: 297/654 0.259s 0.007s
+im_detect: 298/654 0.259s 0.007s
+im_detect: 299/654 0.260s 0.007s
+im_detect: 300/654 0.260s 0.007s
+im_detect: 301/654 0.259s 0.007s
+im_detect: 302/654 0.260s 0.007s
+im_detect: 303/654 0.260s 0.007s
+im_detect: 304/654 0.260s 0.007s
+im_detect: 305/654 0.260s 0.007s
+im_detect: 306/654 0.260s 0.007s
+im_detect: 307/654 0.260s 0.007s
+im_detect: 308/654 0.260s 0.007s
+im_detect: 309/654 0.260s 0.007s
+im_detect: 310/654 0.260s 0.007s
+im_detect: 311/654 0.260s 0.007s
+im_detect: 312/654 0.260s 0.007s
+im_detect: 313/654 0.260s 0.007s
+im_detect: 314/654 0.260s 0.007s
+im_detect: 315/654 0.260s 0.007s
+im_detect: 316/654 0.260s 0.007s
+im_detect: 317/654 0.260s 0.007s
+im_detect: 318/654 0.260s 0.007s
+im_detect: 319/654 0.260s 0.007s
+im_detect: 320/654 0.260s 0.007s
+im_detect: 321/654 0.260s 0.007s
+im_detect: 322/654 0.260s 0.007s
+im_detect: 323/654 0.260s 0.007s
+im_detect: 324/654 0.260s 0.007s
+im_detect: 325/654 0.260s 0.007s
+im_detect: 326/654 0.261s 0.007s
+im_detect: 327/654 0.261s 0.007s
+im_detect: 328/654 0.261s 0.007s
+im_detect: 329/654 0.261s 0.007s
+im_detect: 330/654 0.261s 0.007s
+im_detect: 331/654 0.261s 0.007s
+im_detect: 332/654 0.261s 0.007s
+im_detect: 333/654 0.261s 0.007s
+im_detect: 334/654 0.261s 0.007s
+im_detect: 335/654 0.261s 0.007s
+im_detect: 336/654 0.261s 0.007s
+im_detect: 337/654 0.261s 0.007s
+im_detect: 338/654 0.261s 0.007s
+im_detect: 339/654 0.261s 0.007s
+im_detect: 340/654 0.261s 0.007s
+im_detect: 341/654 0.261s 0.007s
+im_detect: 342/654 0.261s 0.007s
+im_detect: 343/654 0.261s 0.007s
+im_detect: 344/654 0.261s 0.007s
+im_detect: 345/654 0.262s 0.007s
+im_detect: 346/654 0.262s 0.007s
+im_detect: 347/654 0.262s 0.007s
+im_detect: 348/654 0.262s 0.007s
+im_detect: 349/654 0.262s 0.007s
+im_detect: 350/654 0.262s 0.007s
+im_detect: 351/654 0.262s 0.007s
+im_detect: 352/654 0.262s 0.007s
+im_detect: 353/654 0.262s 0.007s
+im_detect: 354/654 0.262s 0.007s
+im_detect: 355/654 0.262s 0.007s
+im_detect: 356/654 0.262s 0.007s
+im_detect: 357/654 0.262s 0.007s
+im_detect: 358/654 0.262s 0.007s
+im_detect: 359/654 0.262s 0.007s
+im_detect: 360/654 0.262s 0.007s
+im_detect: 361/654 0.262s 0.007s
+im_detect: 362/654 0.263s 0.007s
+im_detect: 363/654 0.263s 0.007s
+im_detect: 364/654 0.263s 0.007s
+im_detect: 365/654 0.263s 0.007s
+im_detect: 366/654 0.263s 0.007s
+im_detect: 367/654 0.263s 0.007s
+im_detect: 368/654 0.263s 0.007s
+im_detect: 369/654 0.263s 0.007s
+im_detect: 370/654 0.263s 0.007s
+im_detect: 371/654 0.263s 0.007s
+im_detect: 372/654 0.263s 0.007s
+im_detect: 373/654 0.263s 0.007s
+im_detect: 374/654 0.263s 0.007s
+im_detect: 375/654 0.263s 0.007s
+im_detect: 376/654 0.263s 0.007s
+im_detect: 377/654 0.263s 0.007s
+im_detect: 378/654 0.263s 0.007s
+im_detect: 379/654 0.264s 0.007s
+im_detect: 380/654 0.264s 0.007s
+im_detect: 381/654 0.264s 0.007s
+im_detect: 382/654 0.264s 0.007s
+im_detect: 383/654 0.264s 0.007s
+im_detect: 384/654 0.264s 0.007s
+im_detect: 385/654 0.264s 0.007s
+im_detect: 386/654 0.264s 0.007s
+im_detect: 387/654 0.264s 0.007s
+im_detect: 388/654 0.264s 0.007s
+im_detect: 389/654 0.264s 0.007s
+im_detect: 390/654 0.264s 0.007s
+im_detect: 391/654 0.264s 0.007s
+im_detect: 392/654 0.264s 0.007s
+im_detect: 393/654 0.264s 0.007s
+im_detect: 394/654 0.264s 0.007s
+im_detect: 395/654 0.264s 0.007s
+im_detect: 396/654 0.264s 0.007s
+im_detect: 397/654 0.264s 0.007s
+im_detect: 398/654 0.264s 0.007s
+im_detect: 399/654 0.264s 0.007s
+im_detect: 400/654 0.264s 0.007s
+im_detect: 401/654 0.265s 0.007s
+im_detect: 402/654 0.265s 0.007s
+im_detect: 403/654 0.265s 0.007s
+im_detect: 404/654 0.265s 0.007s
+im_detect: 405/654 0.265s 0.007s
+im_detect: 406/654 0.265s 0.007s
+im_detect: 407/654 0.265s 0.007s
+im_detect: 408/654 0.265s 0.007s
+im_detect: 409/654 0.265s 0.007s
+im_detect: 410/654 0.265s 0.007s
+im_detect: 411/654 0.265s 0.007s
+im_detect: 412/654 0.265s 0.007s
+im_detect: 413/654 0.265s 0.007s
+im_detect: 414/654 0.265s 0.007s
+im_detect: 415/654 0.265s 0.007s
+im_detect: 416/654 0.265s 0.007s
+im_detect: 417/654 0.265s 0.007s
+im_detect: 418/654 0.265s 0.007s
+im_detect: 419/654 0.265s 0.007s
+im_detect: 420/654 0.265s 0.007s
+im_detect: 421/654 0.265s 0.007s
+im_detect: 422/654 0.265s 0.007s
+im_detect: 423/654 0.265s 0.007s
+im_detect: 424/654 0.265s 0.007s
+im_detect: 425/654 0.265s 0.007s
+im_detect: 426/654 0.266s 0.007s
+im_detect: 427/654 0.266s 0.007s
+im_detect: 428/654 0.266s 0.007s
+im_detect: 429/654 0.266s 0.007s
+im_detect: 430/654 0.266s 0.007s
+im_detect: 431/654 0.266s 0.007s
+im_detect: 432/654 0.266s 0.007s
+im_detect: 433/654 0.266s 0.007s
+im_detect: 434/654 0.266s 0.007s
+im_detect: 435/654 0.266s 0.007s
+im_detect: 436/654 0.266s 0.007s
+im_detect: 437/654 0.266s 0.007s
+im_detect: 438/654 0.266s 0.007s
+im_detect: 439/654 0.266s 0.007s
+im_detect: 440/654 0.266s 0.007s
+im_detect: 441/654 0.266s 0.007s
+im_detect: 442/654 0.266s 0.007s
+im_detect: 443/654 0.266s 0.007s
+im_detect: 444/654 0.266s 0.007s
+im_detect: 445/654 0.266s 0.007s
+im_detect: 446/654 0.266s 0.007s
+im_detect: 447/654 0.266s 0.007s
+im_detect: 448/654 0.266s 0.007s
+im_detect: 449/654 0.266s 0.007s
+im_detect: 450/654 0.267s 0.007s
+im_detect: 451/654 0.267s 0.007s
+im_detect: 452/654 0.267s 0.007s
+im_detect: 453/654 0.267s 0.007s
+im_detect: 454/654 0.267s 0.007s
+im_detect: 455/654 0.267s 0.007s
+im_detect: 456/654 0.267s 0.007s
+im_detect: 457/654 0.267s 0.007s
+im_detect: 458/654 0.267s 0.007s
+im_detect: 459/654 0.267s 0.007s
+im_detect: 460/654 0.267s 0.007s
+im_detect: 461/654 0.267s 0.007s
+im_detect: 462/654 0.267s 0.007s
+im_detect: 463/654 0.267s 0.007s
+im_detect: 464/654 0.267s 0.007s
+im_detect: 465/654 0.267s 0.007s
+im_detect: 466/654 0.267s 0.007s
+im_detect: 467/654 0.267s 0.007s
+im_detect: 468/654 0.267s 0.007s
+im_detect: 469/654 0.267s 0.007s
+im_detect: 470/654 0.267s 0.007s
+im_detect: 471/654 0.267s 0.007s
+im_detect: 472/654 0.267s 0.007s
+im_detect: 473/654 0.267s 0.007s
+im_detect: 474/654 0.267s 0.007s
+im_detect: 475/654 0.267s 0.007s
+im_detect: 476/654 0.267s 0.007s
+im_detect: 477/654 0.267s 0.007s
+im_detect: 478/654 0.267s 0.007s
+im_detect: 479/654 0.268s 0.007s
+im_detect: 480/654 0.268s 0.007s
+im_detect: 481/654 0.268s 0.007s
+im_detect: 482/654 0.268s 0.007s
+im_detect: 483/654 0.268s 0.007s
+im_detect: 484/654 0.268s 0.007s
+im_detect: 485/654 0.268s 0.007s
+im_detect: 486/654 0.268s 0.007s
+im_detect: 487/654 0.268s 0.007s
+im_detect: 488/654 0.268s 0.007s
+im_detect: 489/654 0.268s 0.007s
+im_detect: 490/654 0.268s 0.007s
+im_detect: 491/654 0.268s 0.007s
+im_detect: 492/654 0.268s 0.007s
+im_detect: 493/654 0.268s 0.007s
+im_detect: 494/654 0.268s 0.007s
+im_detect: 495/654 0.268s 0.007s
+im_detect: 496/654 0.268s 0.007s
+im_detect: 497/654 0.268s 0.007s
+im_detect: 498/654 0.268s 0.007s
+im_detect: 499/654 0.268s 0.007s
+im_detect: 500/654 0.268s 0.007s
+im_detect: 501/654 0.268s 0.007s
+im_detect: 502/654 0.268s 0.007s
+im_detect: 503/654 0.268s 0.007s
+im_detect: 504/654 0.268s 0.007s
+im_detect: 505/654 0.268s 0.007s
+im_detect: 506/654 0.268s 0.007s
+im_detect: 507/654 0.268s 0.007s
+im_detect: 508/654 0.268s 0.007s
+im_detect: 509/654 0.268s 0.007s
+im_detect: 510/654 0.268s 0.007s
+im_detect: 511/654 0.268s 0.007s
+im_detect: 512/654 0.268s 0.006s
+im_detect: 513/654 0.268s 0.006s
+im_detect: 514/654 0.268s 0.006s
+im_detect: 515/654 0.268s 0.006s
+im_detect: 516/654 0.268s 0.006s
+im_detect: 517/654 0.268s 0.006s
+im_detect: 518/654 0.268s 0.006s
+im_detect: 519/654 0.268s 0.006s
+im_detect: 520/654 0.268s 0.006s
+im_detect: 521/654 0.268s 0.006s
+im_detect: 522/654 0.268s 0.006s
+im_detect: 523/654 0.268s 0.006s
+im_detect: 524/654 0.268s 0.006s
+im_detect: 525/654 0.268s 0.006s
+im_detect: 526/654 0.268s 0.006s
+im_detect: 527/654 0.268s 0.006s
+im_detect: 528/654 0.268s 0.006s
+im_detect: 529/654 0.269s 0.006s
+im_detect: 530/654 0.269s 0.006s
+im_detect: 531/654 0.269s 0.006s
+im_detect: 532/654 0.269s 0.006s
+im_detect: 533/654 0.269s 0.006s
+im_detect: 534/654 0.269s 0.006s
+im_detect: 535/654 0.269s 0.006s
+im_detect: 536/654 0.269s 0.006s
+im_detect: 537/654 0.269s 0.006s
+im_detect: 538/654 0.269s 0.006s
+im_detect: 539/654 0.269s 0.006s
+im_detect: 540/654 0.269s 0.006s
+im_detect: 541/654 0.269s 0.006s
+im_detect: 542/654 0.269s 0.006s
+im_detect: 543/654 0.269s 0.006s
+im_detect: 544/654 0.269s 0.006s
+im_detect: 545/654 0.269s 0.006s
+im_detect: 546/654 0.269s 0.006s
+im_detect: 547/654 0.269s 0.006s
+im_detect: 548/654 0.269s 0.006s
+im_detect: 549/654 0.269s 0.006s
+im_detect: 550/654 0.269s 0.006s
+im_detect: 551/654 0.269s 0.006s
+im_detect: 552/654 0.269s 0.006s
+im_detect: 553/654 0.269s 0.006s
+im_detect: 554/654 0.269s 0.006s
+im_detect: 555/654 0.269s 0.006s
+im_detect: 556/654 0.269s 0.006s
+im_detect: 557/654 0.269s 0.006s
+im_detect: 558/654 0.269s 0.006s
+im_detect: 559/654 0.269s 0.006s
+im_detect: 560/654 0.270s 0.006s
+im_detect: 561/654 0.270s 0.006s
+im_detect: 562/654 0.270s 0.006s
+im_detect: 563/654 0.270s 0.006s
+im_detect: 564/654 0.270s 0.006s
+im_detect: 565/654 0.270s 0.006s
+im_detect: 566/654 0.270s 0.006s
+im_detect: 567/654 0.270s 0.006s
+im_detect: 568/654 0.270s 0.006s
+im_detect: 569/654 0.270s 0.006s
+im_detect: 570/654 0.270s 0.006s
+im_detect: 571/654 0.270s 0.006s
+im_detect: 572/654 0.270s 0.006s
+im_detect: 573/654 0.270s 0.006s
+im_detect: 574/654 0.270s 0.006s
+im_detect: 575/654 0.270s 0.006s
+im_detect: 576/654 0.270s 0.006s
+im_detect: 577/654 0.270s 0.006s
+im_detect: 578/654 0.270s 0.006s
+im_detect: 579/654 0.270s 0.006s
+im_detect: 580/654 0.270s 0.006s
+im_detect: 581/654 0.270s 0.006s
+im_detect: 582/654 0.270s 0.006s
+im_detect: 583/654 0.270s 0.006s
+im_detect: 584/654 0.270s 0.006s
+im_detect: 585/654 0.270s 0.006s
+im_detect: 586/654 0.270s 0.006s
+im_detect: 587/654 0.270s 0.006s
+im_detect: 588/654 0.270s 0.006s
+im_detect: 589/654 0.270s 0.006s
+im_detect: 590/654 0.270s 0.006s
+im_detect: 591/654 0.270s 0.006s
+im_detect: 592/654 0.270s 0.006s
+im_detect: 593/654 0.270s 0.006s
+im_detect: 594/654 0.270s 0.006s
+im_detect: 595/654 0.271s 0.006s
+im_detect: 596/654 0.270s 0.006s
+im_detect: 597/654 0.271s 0.006s
+im_detect: 598/654 0.271s 0.006s
+im_detect: 599/654 0.271s 0.006s
+im_detect: 600/654 0.271s 0.006s
+im_detect: 601/654 0.271s 0.006s
+im_detect: 602/654 0.271s 0.006s
+im_detect: 603/654 0.271s 0.006s
+im_detect: 604/654 0.271s 0.006s
+im_detect: 605/654 0.271s 0.006s
+im_detect: 606/654 0.271s 0.006s
+im_detect: 607/654 0.271s 0.006s
+im_detect: 608/654 0.271s 0.006s
+im_detect: 609/654 0.271s 0.006s
+im_detect: 610/654 0.271s 0.006s
+im_detect: 611/654 0.271s 0.006s
+im_detect: 612/654 0.271s 0.006s
+im_detect: 613/654 0.271s 0.006s
+im_detect: 614/654 0.271s 0.006s
+im_detect: 615/654 0.271s 0.006s
+im_detect: 616/654 0.271s 0.006s
+im_detect: 617/654 0.271s 0.006s
+im_detect: 618/654 0.271s 0.006s
+im_detect: 619/654 0.271s 0.006s
+im_detect: 620/654 0.271s 0.006s
+im_detect: 621/654 0.271s 0.006s
+im_detect: 622/654 0.271s 0.006s
+im_detect: 623/654 0.271s 0.006s
+im_detect: 624/654 0.271s 0.006s
+im_detect: 625/654 0.271s 0.006s
+im_detect: 626/654 0.271s 0.006s
+im_detect: 627/654 0.271s 0.006s
+im_detect: 628/654 0.271s 0.006s
+im_detect: 629/654 0.271s 0.006s
+im_detect: 630/654 0.271s 0.006s
+im_detect: 631/654 0.271s 0.006s
+im_detect: 632/654 0.271s 0.006s
+im_detect: 633/654 0.271s 0.006s
+im_detect: 634/654 0.271s 0.006s
+im_detect: 635/654 0.271s 0.006s
+im_detect: 636/654 0.272s 0.006s
+im_detect: 637/654 0.271s 0.006s
+im_detect: 638/654 0.272s 0.006s
+im_detect: 639/654 0.272s 0.006s
+im_detect: 640/654 0.272s 0.006s
+im_detect: 641/654 0.272s 0.006s
+im_detect: 642/654 0.272s 0.006s
+im_detect: 643/654 0.272s 0.006s
+im_detect: 644/654 0.272s 0.006s
+im_detect: 645/654 0.272s 0.006s
+im_detect: 646/654 0.272s 0.006s
+im_detect: 647/654 0.272s 0.006s
+im_detect: 648/654 0.272s 0.006s
+im_detect: 649/654 0.272s 0.006s
+im_detect: 650/654 0.272s 0.006s
+im_detect: 651/654 0.272s 0.006s
+im_detect: 652/654 0.272s 0.006s
+im_detect: 653/654 0.272s 0.006s
+im_detect: 654/654 0.272s 0.006s
+Applying NMS to all detections
+Evaluating detections
+nyud2_hha_2015_test gt roidb loaded from /data/gpuuser1/fast-rcnn/data/cache/nyud2_hha_2015_test_gt_roidb.pkl
+bathtub             : 27.678874
+bed                 : 77.263683
+bookshelf           : 39.995214
+box                 :  1.692152
+chair               : 47.402094
+counter             : 51.432697
+desk                : 13.202703
+door                : 15.095459
+dresser             : 42.549883
+garbage-bin         : 22.410816
+lamp                : 34.856011
+monitor             : 43.431894
+night-stand         : 48.383837
+pillow              : 39.001849
+sink                : 36.268858
+sofa                : 59.875437
+table               : 26.116436
+television          : 36.996586
+toilet              : 56.967764
+mean                : 37.927487
